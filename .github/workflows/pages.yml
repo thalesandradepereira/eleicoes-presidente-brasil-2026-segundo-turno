@@ -35,8 +35,9 @@ jobs:
           echo "QA PASS: index.html and static assets exist"
 
   deploy:
-    name: Deploy GitHub Pages
+    name: Deploy GitHub Pages (only when eligible)
     needs: verify
+    if: ${{ vars.ENABLE_GITHUB_PAGES == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

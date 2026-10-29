@@ -103,6 +103,24 @@ class DashboardReleaseQA(unittest.TestCase):
         self.assertEqual(tuple(cutoff), EXPECTED_CUTOFF_1715)
         self.assertEqual(len(foreign_countries), 99)
         self.assertEqual(self.meta["br_totals"], [*EXPECTED_NATIONAL, 499_205])
+        reference = json.loads((ROOT / "tests/fixtures/expected_by_uf.json").read_text(encoding="utf-8"))
+        uf_results = {uf: {k: 0 for k in next(iter(reference.values()))} for uf in reference}
+        for line in self.rows:
+            x = [int(v) for v in line.split(",")]
+            uf = cities[x[0]][0]
+            if uf == "ZZ":
+                continue
+            data = uf_results[uf]
+            for key, value in zip(("urnas", "lula", "flavio", "brancos", "nulos"),
+                                  (1, x[5], x[6], x[7], x[8])):
+                data[key] += value
+            if x[4] <= 900:
+                for key, value in zip(("corte_urnas", "corte_lula", "corte_flavio", "corte_brancos", "corte_nulos"),
+                                      (1, x[5], x[6], x[7], x[8])):
+                    data[key] += value
+        for uf, expect in reference.items():
+            for field, value in expect.items():
+                self.assertEqual(uf_results[uf][field], value, f"{uf} / {field}")
 
     def test_no_accidental_debug_files(self):
         # Confirm only expected code artifacts exist (no ZIPs, tokens or original local history).

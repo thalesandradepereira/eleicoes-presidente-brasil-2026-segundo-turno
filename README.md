@@ -79,11 +79,11 @@ O HTML carrega registros compactados com gzip e codificados em base64, incorpora
 python3 -m unittest discover -s tests -v
 ```
 
-Os testes verificam o arquivo completo, estrutura da base e geometrias, digest SHA-256 do payload incorporado, total por categoria, quantidade de boletins do exterior, e os quatro somatórios das urnas brasileiras encerradas até 17h15.
+Os testes verificam o arquivo completo, estrutura da base e geometrias, digest SHA-256 do payload incorporado, total por categoria, 270 conferências por UF (27 UFs × 5 indicadores × resultado integral e corte), quantidade de boletins do exterior e os quatro somatórios das urnas brasileiras encerradas até 17h15.
 
 ### Entrega e rollback
 
-Cada alteração na branch `main` executa QA antes da implantação. Apenas um resultado de CI aprovado permite o deploy. O release traz a versão, a revisão e os resultados dos testes; o rollback consiste em restaurar um commit/tag anterior e executar novamente o workflow, respeitando o mesmo QA.
+Cada alteração na branch `main` executa QA antes da implantação. O deploy ocorre somente quando a variável de repositório `ENABLE_GITHUB_PAGES=true` estiver habilitada, **e quando o plano da conta suportar Pages em repositório privado**. Como a tentativa em 29/10/2026 retornou HTTP 422 (plano sem suporte), a publicação está bloqueada, preservando a privacidade do repositório. Apenas um resultado de CI aprovado permite o deploy. O release traz a versão, a revisão e os resultados dos testes; o rollback consiste em restaurar um commit/tag anterior e executar novamente o workflow, respeitando o mesmo QA.
 
 **Privacidade:** repositório privado, com site **público somente quando o plano GitHub permitir GitHub Pages em repositórios privados**. Os arquivos publicados pelo Pages são necessariamente acessíveis a quem visitar a página; privado não significa que o HTML implantado esteja oculto.
 

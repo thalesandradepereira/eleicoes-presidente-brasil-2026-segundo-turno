@@ -6,6 +6,10 @@
 
 **PT-BR · EN-US** &nbsp; | &nbsp; **Made by TAP** &nbsp; | &nbsp; **Fonte: TSE**
 
+**[Acessar painel público — Eleições Presidente Brasil 2026 · Segundo Turno](https://thalesandradepereira.github.io/eleicoes-presidente-brasil-2026-segundo-turno/)**
+
+_Publicação do painel condicionada a GitHub Pages ativo; a disponibilidade é verificada no deployment._
+
 </div>
 
 ---
@@ -61,7 +65,7 @@ A análise original conferiu os **28 arquivos ZIP oficiais** por hash SHA-512 do
 ## Arquitetura e operação
 
 ```text
-tap-tse-2026-auditoria/
+eleicoes-presidente-brasil-2026-segundo-turno/
 ├── index.html                  # Dashboard completo e offline
 ├── README.md                   # Metodologia, evidências e utilização
 ├── .nojekyll                   # Desativa transformação Jekyll
@@ -83,9 +87,9 @@ Os testes verificam o arquivo completo, estrutura da base e geometrias, digest S
 
 ### Entrega e rollback
 
-Cada alteração na branch `main` executa QA antes da implantação. O deploy ocorre somente quando a variável de repositório `ENABLE_GITHUB_PAGES=true` estiver habilitada, **e quando o plano da conta suportar Pages em repositório privado**. Como a tentativa em 29/10/2026 retornou HTTP 422 (plano sem suporte), a publicação está bloqueada, preservando a privacidade do repositório. Apenas um resultado de CI aprovado permite o deploy. O release traz a versão, a revisão e os resultados dos testes; o rollback consiste em restaurar um commit/tag anterior e executar novamente o workflow, respeitando o mesmo QA.
+Cada alteração na branch `main` executa QA antes da implantação. O deploy ocorre quando a variável de repositório `ENABLE_GITHUB_PAGES=true` estiver habilitada e o GitHub Pages estiver configurado. A publicação do site ocorre apenas após o QA; as execuções e o rollback são auditáveis por commit/tag.
 
-**Privacidade:** repositório privado, com site **público somente quando o plano GitHub permitir GitHub Pages em repositórios privados**. Os arquivos publicados pelo Pages são necessariamente acessíveis a quem visitar a página; privado não significa que o HTML implantado esteja oculto.
+**Transparência:** repositório e página públicos por autorização expressa do proprietário. O código é visível; isso não implica uma licença genérica para reutilização. Os dados do TSE e as geometrias têm suas próprias origens e condições de uso, descritas em [NOTICE.md](NOTICE.md). **Não há credenciais ou conteúdo privado no site.**
 
 ---
 

@@ -1,3 +1,5 @@
+> **Histórico v1.0.0-rc.1.** O status atual está documentado em [v1.0.0](RELEASE_NOTES_V1.0.0.md).
+
 # TAP TSE 2026 — v1.0.0-rc.1
 
 **Private repository / Public site deployment pending GitHub Pages plan eligibility**

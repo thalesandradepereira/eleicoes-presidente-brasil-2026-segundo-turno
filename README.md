@@ -8,7 +8,7 @@
 
 **[Acessar painel público — Eleições Presidente Brasil 2026 · Segundo Turno](https://thalesandradepereira.github.io/eleicoes-presidente-brasil-2026-segundo-turno/)**
 
-_Publicação do painel condicionada a GitHub Pages ativo; a disponibilidade é verificada no deployment._
+_Página pública: GitHub Pages com HTTPS. [Auditoria da publicação](docs/QA_PUBLICACAO.md) · [Release de produção](docs/RELEASE_NOTES_V1.0.0.md)._
 
 </div>
 
@@ -16,7 +16,7 @@ _Publicação do painel condicionada a GitHub Pages ativo; a disponibilidade é 
 
 ## Visão geral
 
-O projeto entrega um arquivo `index.html` autossuficiente, sem backend ou carregamento remoto de resultados eleitorais. A consulta pública permite verificar os votos por urna, município, zona e seção, além de visualizar mapas do Brasil e do exterior e a evolução por minuto de **encerramento da urna**.
+O projeto publicado em [GitHub Pages](https://thalesandradepereira.github.io/eleicoes-presidente-brasil-2026-segundo-turno/) entrega um arquivo `index.html` autossuficiente, sem backend ou carregamento remoto de resultados eleitorais. A consulta pública permite verificar os votos por urna, município, zona e seção, além de visualizar mapas do Brasil e do exterior e a evolução por minuto de **encerramento da urna**.
 
 > **Projeto independente, não oficial e sem vínculo institucional com o Tribunal Superior Eleitoral (TSE).** A fonte primária dos votos é o TSE; a interpretação dos dados, a visualização e o código do painel são responsabilidade deste projeto.
 

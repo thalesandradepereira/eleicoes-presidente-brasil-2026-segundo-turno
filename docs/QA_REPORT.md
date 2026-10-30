@@ -1,3 +1,5 @@
+> **Relatório histórico do release candidato (antes de abrir o repositório).** O bloqueio do GitHub Pages descrito abaixo foi solucionado por autorização do proprietário. Consulte o [QA da publicação pública](QA_PUBLICACAO.md) e o [release de produção](RELEASE_NOTES_V1.0.0.md) para o status atual.
+
 # QA Report · TAP TSE 2026 · Release candidate 1
 
 **Date:** 2026-10-29 (America/Sao_Paulo)  

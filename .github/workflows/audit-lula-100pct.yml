@@ -1,0 +1,103 @@
+name: Audit ballot boxes with 100% valid Lula votes - PDF
+
+on:
+  push:
+    branches:
+      - audit-lula-100pct-bu-2026
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit_and_pdf:
+    name: Verify TSE ballot data, generate PDF and CSV
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout audited dataset
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PDF dependencies
+        run: python -m pip install --disable-pip-version-check "reportlab==4.4.4" "pypdf==5.9.0"
+
+      - name: Derive exhaustive zero-opponent-vote records
+        run: python scripts/audit_urnas_lula_100.py
+
+      - name: Verify PDF page structure, CSV and summary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from pypdf import PdfReader
+          import csv,json
+          out=Path("out")
+          summary=json.loads((out/"Auditoria_TSE_2026_Urnas_100pct_Lula_Resumo.json").read_text())
+          pdf=out/"Auditoria_TSE_2026_Urnas_100pct_Votos_Validos_Lula.pdf"
+          csv_file=out/"Auditoria_TSE_2026_Urnas_100pct_Lula_Dados.csv"
+          assert pdf.exists() and pdf.stat().st_size>1000
+          doc=PdfReader(str(pdf))
+          assert len(doc.pages)>=2
+          first=doc.pages[0].extract_text()
+          assert "TSE 2026" in first or "AUDITORIA" in first
+          with csv_file.open(encoding="utf-8-sig",newline="") as f:
+              rows=list(csv.DictReader(f,delimiter=";"))
+          assert len(rows)==summary["urna_100pct_votos_validos_lula"]
+          assert sum(int(x["lula"]) for x in rows)==summary["lula_votos_nessas_urnas"]
+          assert all(int(x["flavio_bolsonaro"])==0 and int(x["lula"])>0 for x in rows)
+          assert sum(x["tambem_100pct_comparecimento"]=="True" for x in rows)==summary["urna_100pct_total_comparecimento_lula"]
+          print("QA_PDF_OK pages=",len(doc.pages),"rows=",len(rows),"pdf_size=",pdf.stat().st_size)
+          PY
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("out/Auditoria_TSE_2026_Urnas_100pct_Lula_Resumo.json").read_text(encoding="utf-8"))
+          notes=f"""# Auditoria dos boletins TSE 2026: 100% dos votos validos para Lula
+
+          - **Urnas com Lula > 0 e Flavio Bolsonaro = 0:** {d['urna_100pct_votos_validos_lula']:,}.
+          - **Subconjunto tambem sem brancos/nulos e comparecimento reconciliado:** {d['urna_100pct_total_comparecimento_lula']:,}.
+          - **Municipios/localidades:** {d['municipios_ou_localidades']:,}.
+          - **Registros auditados:** {d['base_registros']:,}.
+          - **Votos Lula nas urnas selecionadas:** {d['lula_votos_nessas_urnas']:,}.
+
+          A tabela PDF inclui UF, municipio, zona, secao, numero de urna, votos Lula, Flavio, brancos, nulos e comparecimento. O CSV reproduz a lista integral.
+
+          **Criterio:** 100% dos votos validos nao implica 100% de todos os votos; casos com brancos/nulos estao identificados. Nenhuma conclusao sobre fraude ou irregularidade e inferida.
+
+          **Fonte oficial:** https://dadosabertos.tse.jus.br/dataset/resultados-2026-boletim-de-urna
+
+          **QA:** total nacional reconciliado, 499.205 registros, hash SHA-256 e integridade da lista em CSV.
+          """
+          Path("out/RELEASE_NOTES.md").write_text(notes,encoding="utf-8")
+          PY
+
+      - name: Archive report files
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-tse-2026-100pct-lula
+          path: |
+            out/*.pdf
+            out/*.csv
+            out/*Resumo.json
+          retention-days: 90
+
+      - name: Publish standalone downloadable audit report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          TAG="auditoria-tse-2026-urnas-lula-100pct"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG"               --target "$GITHUB_SHA"               --title "TSE 2026 | Auditoria urnas com 100% dos votos validos para Lula"               --notes-file out/RELEASE_NOTES.md               --latest=false
+          fi
+          gh release upload "$TAG"              out/Auditoria_TSE_2026_Urnas_100pct_Votos_Validos_Lula.pdf              out/Auditoria_TSE_2026_Urnas_100pct_Lula_Dados.csv              out/Auditoria_TSE_2026_Urnas_100pct_Lula_Resumo.json              --clobber

@@ -195,7 +195,7 @@ def make_pdf(rows,totals,other_count,bad,sha):
     ]))
     story.append(tb)
     story.extend([Spacer(1,6*mm),Paragraph("NOTAS DE LEITURA",h2),
-      Paragraph("A designação "100% total?" significa ausência de votos adversários, brancos e nulos, e reconciliação entre voto nominal e comparecimento. A coluna "Comp." transcreve o campo de comparecimento informado pelo TSE.",body),
+      Paragraph('A designação "100% total?" significa ausência de votos adversários, brancos e nulos, e reconciliação entre voto nominal e comparecimento. A coluna "Comp." transcreve o campo de comparecimento informado pelo TSE.',body),
       Paragraph("Eventuais divergências de comparecimento devem ser investigadas no boletim original antes de qualquer conclusão. Este documento não substitui a conferência do BU original.",body)])
     doc.build(story)
 
